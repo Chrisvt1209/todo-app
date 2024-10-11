@@ -1,35 +1,52 @@
 package com.example.todobackend.services;
 
 import com.example.todobackend.models.TaskItem;
-import com.example.todobackend.repositories.TaskItemRepository;
+import com.example.todobackend.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class TaskItemService {
-    private final List<TaskItem> todoList;
-    private final TaskItemRepository taskItemRepository;
+public class TaskService {
+    private final TaskRepository taskRepository;
 
-    public TaskItemService(TaskItemRepository taskItemRepository) {
-        this.taskItemRepository = taskItemRepository;
-        this.todoList = new ArrayList<>();
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
-    public void createTodoItem(TaskItem taskItem) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void createTask(TaskItem taskItem) {
+        taskRepository.save(taskItem);
     }
 
-    public List<TaskItem> getTodoList() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<TaskItem> getTaskList() {
+        return taskRepository.findAll();
     }
 
-    public TaskItem updateTodoItem(int id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Optional<TaskItem> updateTask(int id, TaskItem updatedTaskItem) {
+        return taskRepository.findById(id).map(
+                taskItem -> {
+                    taskItem.setTitle(updatedTaskItem.getTitle());
+                    taskItem.setDescription(updatedTaskItem.getDescription());
+                    taskItem.setCreatedAt(updatedTaskItem.getCreatedAt());
+                    taskItem.setCompleted(updatedTaskItem.isCompleted());
+                    return taskRepository.save(taskItem);
+                });
     }
 
-    public void deleteTodoItem(int id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Optional<TaskItem> markTaskAsCompleted(int id) {
+        return taskRepository.findById(id).map(
+                taskItem -> {
+                    taskItem.setCompleted(true);
+                    return taskRepository.save(taskItem);
+                });
+    }
+
+    public List<TaskItem> findTaskByCompletionStatus(boolean isCompleted) {
+        return taskRepository.findByIsCompleted(isCompleted);
+    }
+
+    public void deleteTask(int id) {
+        taskRepository.deleteById(id);
     }
 }

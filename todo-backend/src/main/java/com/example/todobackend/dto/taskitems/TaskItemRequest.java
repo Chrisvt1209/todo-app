@@ -1,4 +1,10 @@
-package com.example.todobackend.dto.todoitems;
+package com.example.todobackend.dto.taskitems;
 
-public record TaskItemRequest(String title, String description, boolean isCompleted) {
+import java.time.LocalDateTime;
+
+public record TaskItemRequest(
+        String title,
+        String description,
+        LocalDateTime createdAt,
+        boolean isCompleted) {
 }

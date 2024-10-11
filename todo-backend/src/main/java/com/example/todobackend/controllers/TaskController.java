@@ -1,8 +1,10 @@
 package com.example.todobackend.controllers;
 
-import com.example.todobackend.dto.todoitems.TaskItemRequest;
-import com.example.todobackend.dto.todoitems.TaskItemResponse;
-import com.example.todobackend.services.TaskItemService;
+import com.example.todobackend.dto.mappers.TaskItemMapper;
+import com.example.todobackend.dto.taskitems.TaskItemRequest;
+import com.example.todobackend.dto.taskitems.TaskItemResponse;
+import com.example.todobackend.models.TaskItem;
+import com.example.todobackend.services.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,30 +12,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todo")
-public class TodoItemController {
-    private final TaskItemService taskItemService;
+public class TaskController {
+    private final TaskService taskService;
 
-    public TodoItemController(TaskItemService taskItemService) {
-        this.taskItemService = taskItemService;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @PostMapping("/create")
     public ResponseEntity<TaskItemResponse> createTodoItem(@RequestBody TaskItemRequest request) {
-        throw new UnsupportedOperationException();
+        TaskItem taskItem = TaskItemMapper.toDomain(request);
+        taskService.createTask(taskItem);
+        TaskItemResponse response = TaskItemMapper.toResponse(taskItem);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<TaskItemResponse>> getTodoList(@RequestBody TaskItemRequest request) {
-        throw new UnsupportedOperationException();
+        List<TaskItem> taskItems = taskService.getTaskList();
+        List<TaskItemResponse> response = taskItems.stream()
+                .map(TaskItemMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<TaskItemResponse> updateTodoItem(@PathVariable int id) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<TaskItemResponse> updateTodoItem(@PathVariable int id, TaskItemRequest request) {
+        TaskItem updatedTaskItem = TaskItemMapper.toDomain(request);
+        return taskService.updateTask(id, updatedTaskItem)
+                .map(TaskItemMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<TaskItemResponse> deleteTodoItem(@PathVariable int id) {
-        throw new UnsupportedOperationException();
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
