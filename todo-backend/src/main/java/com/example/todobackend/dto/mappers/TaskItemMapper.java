@@ -2,6 +2,7 @@ package com.example.todobackend.dto.mappers;
 
 import com.example.todobackend.dto.taskitems.TaskItemRequest;
 import com.example.todobackend.dto.taskitems.TaskItemResponse;
+import com.example.todobackend.dto.taskitems.UpdateTaskItemRequest;
 import com.example.todobackend.models.TaskItem;
 
 public class TaskItemMapper {
@@ -20,7 +21,15 @@ public class TaskItemMapper {
                 request.title(),
                 request.description(),
                 request.createdAt(),
-                request.isCompleted()
+                false
+        );
+    }
+
+    public static TaskItem toUpdateTask(UpdateTaskItemRequest request) {
+        return new TaskItem(
+                request.title(),
+                request.description(),
+                request.createdAt()
         );
     }
 }

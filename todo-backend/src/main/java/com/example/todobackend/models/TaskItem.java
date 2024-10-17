@@ -1,8 +1,7 @@
 package com.example.todobackend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +13,8 @@ import java.time.LocalDateTime;
 @Table(schema = "TaskItems")
 public class TaskItem {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private int id;
     private String title;
     private String description;
@@ -23,19 +24,17 @@ public class TaskItem {
     public TaskItem() {
     }
 
-    public TaskItem(int id, String title, String description, LocalDateTime createdAt, boolean isCompleted) {
-        this.id = id;
+    public TaskItem(String title, String description, LocalDateTime createdAt, boolean isCompleted) {
         this.title = title;
         this.description = description;
         this.createdAt = createdAt;
         this.isCompleted = isCompleted;
     }
 
-    public TaskItem(String title, String description, LocalDateTime createdAt, boolean isCompleted) {
+    public TaskItem(String title, String description, LocalDateTime createdAt) {
         this.title = title;
         this.description = description;
         this.createdAt = createdAt;
-        this.isCompleted = isCompleted;
     }
 
     @Override

@@ -23,6 +23,10 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public Optional<TaskItem> getTaskById(int id) {
+        return taskRepository.findById(id);
+    }
+
     public Optional<TaskItem> updateTask(int id, TaskItem updatedTaskItem) {
         return taskRepository.findById(id).map(
                 taskItem -> {

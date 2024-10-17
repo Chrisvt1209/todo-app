@@ -3,12 +3,15 @@ package com.example.todobackend.controllers;
 import com.example.todobackend.dto.mappers.TaskItemMapper;
 import com.example.todobackend.dto.taskitems.TaskItemRequest;
 import com.example.todobackend.dto.taskitems.TaskItemResponse;
+import com.example.todobackend.dto.taskitems.UpdateTaskItemRequest;
 import com.example.todobackend.models.TaskItem;
 import com.example.todobackend.services.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/todo")
@@ -27,7 +30,7 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<TaskItemResponse>> getTodoList(@RequestBody TaskItemRequest request) {
         List<TaskItem> taskItems = taskService.getTaskList();
         List<TaskItemResponse> response = taskItems.stream()
@@ -36,9 +39,20 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<TaskItemResponse> updateTodoItem(@PathVariable int id, TaskItemRequest request) {
-        TaskItem updatedTaskItem = TaskItemMapper.toDomain(request);
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskItemResponse> getTodoById(@PathVariable int id) {
+        Optional<TaskItem> taskItem = taskService.getTaskById(id);
+        if (taskItem.isPresent()) {
+            TaskItemResponse response = TaskItemMapper.toResponse(taskItem.get());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskItemResponse> updateTodoItem(@PathVariable int id, @RequestBody UpdateTaskItemRequest request) {
+        TaskItem updatedTaskItem = TaskItemMapper.toUpdateTask(request);
         return taskService.updateTask(id, updatedTaskItem)
                 .map(TaskItemMapper::toResponse)
                 .map(ResponseEntity::ok)
