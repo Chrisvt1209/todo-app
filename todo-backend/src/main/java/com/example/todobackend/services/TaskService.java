@@ -1,9 +1,10 @@
 package com.example.todobackend.services;
 
-import com.example.todobackend.models.TaskItem;
+import com.example.todobackend.models.Task;
 import com.example.todobackend.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,42 +16,46 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public void createTask(TaskItem taskItem) {
-        taskRepository.save(taskItem);
+    public void createTask(Task task) {
+        taskRepository.save(task);
     }
 
-    public List<TaskItem> getTaskList() {
+    public List<Task> getTaskList() {
         return taskRepository.findAll();
     }
 
-    public Optional<TaskItem> getTaskById(int id) {
+    public Optional<Task> getTaskById(Long id) {
         return taskRepository.findById(id);
     }
 
-    public Optional<TaskItem> updateTask(int id, TaskItem updatedTaskItem) {
+    public Optional<Task> updateTask(Long id, Task updatedTask) {
         return taskRepository.findById(id).map(
-                taskItem -> {
-                    taskItem.setTitle(updatedTaskItem.getTitle());
-                    taskItem.setDescription(updatedTaskItem.getDescription());
-                    taskItem.setCreatedAt(updatedTaskItem.getCreatedAt());
-                    taskItem.setCompleted(updatedTaskItem.isCompleted());
-                    return taskRepository.save(taskItem);
+                task -> {
+                    task.setTitle(updatedTask.getTitle());
+                    task.setDescription(updatedTask.getDescription());
+                    task.setDueDate(updatedTask.getDueDate());
+                    task.setCompleted(updatedTask.isCompleted());
+                    return taskRepository.save(task);
                 });
     }
 
-    public Optional<TaskItem> markTaskAsCompleted(int id) {
+    public Optional<Task> markTaskAsCompleted(Long id) {
         return taskRepository.findById(id).map(
-                taskItem -> {
-                    taskItem.setCompleted(true);
-                    return taskRepository.save(taskItem);
+                task -> {
+                    task.setCompleted(true);
+                    return taskRepository.save(task);
                 });
     }
 
-    public List<TaskItem> findTaskByCompletionStatus(boolean isCompleted) {
+    public List<Task> findTaskByCompletionStatus(boolean isCompleted) {
         return taskRepository.findByIsCompleted(isCompleted);
     }
 
-    public void deleteTask(int id) {
+    public List<Task> findTasksByDueDate(LocalDate dueDate) {
+        return taskRepository.findTasksByDueDate(dueDate);
+    }
+
+    public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
 }

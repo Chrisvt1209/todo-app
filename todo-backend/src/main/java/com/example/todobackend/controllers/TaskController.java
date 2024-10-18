@@ -1,10 +1,10 @@
 package com.example.todobackend.controllers;
 
-import com.example.todobackend.dto.mappers.TaskItemMapper;
-import com.example.todobackend.dto.taskitems.TaskItemRequest;
-import com.example.todobackend.dto.taskitems.TaskItemResponse;
-import com.example.todobackend.dto.taskitems.UpdateTaskItemRequest;
-import com.example.todobackend.models.TaskItem;
+import com.example.todobackend.dto.mappers.TaskMapper;
+import com.example.todobackend.dto.taskDto.TaskRequest;
+import com.example.todobackend.dto.taskDto.TaskResponse;
+import com.example.todobackend.dto.taskDto.UpdateTaskRequest;
+import com.example.todobackend.models.Task;
 import com.example.todobackend.services.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/todo")
+@RequestMapping("api/todo")
 public class TaskController {
     private final TaskService taskService;
 
@@ -23,27 +23,27 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<TaskItemResponse> createTodoItem(@RequestBody TaskItemRequest request) {
-        TaskItem taskItem = TaskItemMapper.toDomain(request);
-        taskService.createTask(taskItem);
-        TaskItemResponse response = TaskItemMapper.toResponse(taskItem);
+    public ResponseEntity<TaskResponse> createTodo(@RequestBody TaskRequest request) {
+        Task task = TaskMapper.toDomain(request);
+        taskService.createTask(task);
+        TaskResponse response = TaskMapper.toResponse(task);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping()
-    public ResponseEntity<List<TaskItemResponse>> getTodoList(@RequestBody TaskItemRequest request) {
-        List<TaskItem> taskItems = taskService.getTaskList();
-        List<TaskItemResponse> response = taskItems.stream()
-                .map(TaskItemMapper::toResponse)
+    public ResponseEntity<List<TaskResponse>> getTodoList(@RequestBody TaskRequest request) {
+        List<Task> tasks = taskService.getTaskList();
+        List<TaskResponse> response = tasks.stream()
+                .map(TaskMapper::toResponse)
                 .toList();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskItemResponse> getTodoById(@PathVariable int id) {
-        Optional<TaskItem> taskItem = taskService.getTaskById(id);
-        if (taskItem.isPresent()) {
-            TaskItemResponse response = TaskItemMapper.toResponse(taskItem.get());
+    public ResponseEntity<TaskResponse> getTodoById(@PathVariable Long id) {
+        Optional<Task> task = taskService.getTaskById(id);
+        if (task.isPresent()) {
+            TaskResponse response = TaskMapper.toResponse(task.get());
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -51,16 +51,16 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskItemResponse> updateTodoItem(@PathVariable int id, @RequestBody UpdateTaskItemRequest request) {
-        TaskItem updatedTaskItem = TaskItemMapper.toUpdateTask(request);
-        return taskService.updateTask(id, updatedTaskItem)
-                .map(TaskItemMapper::toResponse)
+    public ResponseEntity<TaskResponse> updateTodo(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
+        Task updatedTask = TaskMapper.toUpdateTask(request);
+        return taskService.updateTask(id, updatedTask)
+                .map(TaskMapper::toResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TaskItemResponse> deleteTodoItem(@PathVariable int id) {
+    public ResponseEntity<TaskResponse> deleteTodo(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
