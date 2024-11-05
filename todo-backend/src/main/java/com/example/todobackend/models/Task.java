@@ -27,6 +27,8 @@ public class Task {
 
     private boolean isCompleted = false;
 
+    private TaskPriority taskPriority;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -57,5 +59,13 @@ public class Task {
         this.isCompleted = isCompleted;
         this.user = user;
         this.category = category;
+    }
+
+    public Task(String title, String description, LocalDate dueDate, boolean isCompleted, TaskPriority taskPriority) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.isCompleted = isCompleted;
+        this.taskPriority = taskPriority;
     }
 }
