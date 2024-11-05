@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/todo")
@@ -41,22 +40,17 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> getTodoById(@PathVariable Long id) {
-        Optional<Task> task = taskService.getTaskById(id);
-        if (task.isPresent()) {
-            TaskResponse response = TaskMapper.toResponse(task.get());
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        Task task = taskService.getTaskById(id);
+        TaskResponse response = TaskMapper.toResponse(task);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTodo(@PathVariable Long id, @RequestBody UpdateTaskRequest request) {
-        Task updatedTask = TaskMapper.toUpdateTask(request);
-        return taskService.updateTask(id, updatedTask)
-                .map(TaskMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TaskResponse> updateTodoPriority(@PathVariable long id, @RequestBody UpdateTaskRequest request) {
+        Task task = taskService.getTaskById(id);
+        task.setTaskPriority(request.taskPriority());
+        taskService.updateTask(id, task);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

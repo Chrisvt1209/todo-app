@@ -1,5 +1,6 @@
 package com.example.todobackend.services;
 
+import com.example.todobackend.exceptions.NotFoundException;
 import com.example.todobackend.models.Task;
 import com.example.todobackend.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -24,27 +25,25 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
+    public Task getTaskById(long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Task not found."));
     }
 
-    public Optional<Task> updateTask(Long id, Task updatedTask) {
-        return taskRepository.findById(id).map(
-                task -> {
-                    task.setTitle(updatedTask.getTitle());
-                    task.setDescription(updatedTask.getDescription());
-                    task.setDueDate(updatedTask.getDueDate());
-                    task.setCompleted(updatedTask.isCompleted());
-                    return taskRepository.save(task);
-                });
-    }
+    public void updateTask(long id, Task updatedTask) {
+        Optional<Task> getTask = taskRepository.findById(id);
 
-    public Optional<Task> markTaskAsCompleted(Long id) {
-        return taskRepository.findById(id).map(
-                task -> {
-                    task.setCompleted(true);
-                    return taskRepository.save(task);
-                });
+        if (getTask.isPresent()) {
+            Task taskToUpdate = getTask.get();
+            taskToUpdate.setTitle(updatedTask.getTitle());
+            taskToUpdate.setDescription(updatedTask.getDescription());
+            taskToUpdate.setDueDate(updatedTask.getDueDate());
+            taskToUpdate.setCompleted(updatedTask.isCompleted());
+            taskToUpdate.setTaskPriority(updatedTask.getTaskPriority());
+            taskRepository.save(taskToUpdate);
+        } else {
+            throw new NotFoundException("Task not found.");
+        }
     }
 
     public List<Task> findTaskByCompletionStatus(boolean isCompleted) {
