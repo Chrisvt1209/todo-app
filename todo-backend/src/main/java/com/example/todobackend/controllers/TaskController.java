@@ -27,11 +27,11 @@ public class TaskController {
         Task task = TaskMapper.toDomain(request);
         taskService.createTask(task);
         TaskResponse response = TaskMapper.toResponse(task);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping()
-    public ResponseEntity<List<TaskResponse>> getTodoList(@RequestBody TaskRequest request) {
+    public ResponseEntity<List<TaskResponse>> getTodoList() {
         List<Task> tasks = taskService.getTaskList();
         List<TaskResponse> response = tasks.stream()
                 .map(TaskMapper::toResponse)
