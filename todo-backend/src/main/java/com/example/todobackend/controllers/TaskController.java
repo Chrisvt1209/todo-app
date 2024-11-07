@@ -39,22 +39,25 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponse> getTodoById(@PathVariable Long id) {
+    public ResponseEntity<TaskResponse> getTodoById(@PathVariable long id) {
         Task task = taskService.getTaskById(id);
         TaskResponse response = TaskMapper.toResponse(task);
         return ResponseEntity.ok(response);
     }
 
+
+    // TODO: Fix update error
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponse> updateTodoPriority(@PathVariable long id, @RequestBody UpdateTaskRequest request) {
+    public ResponseEntity<TaskResponse> updateTodo(@PathVariable long id, @RequestBody UpdateTaskRequest request) {
         Task task = taskService.getTaskById(id);
-        task.setTaskPriority(request.taskPriority());
+        task = TaskMapper.toUpdatedTask(task, request);
         taskService.updateTask(id, task);
-        return ResponseEntity.ok().build();
+        TaskResponse response = TaskMapper.toResponse(task);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<TaskResponse> deleteTodo(@PathVariable Long id) {
+    public ResponseEntity<TaskResponse> deleteTodo(@PathVariable long id) {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }

@@ -40,10 +40,20 @@ public class Task {
     public Task() {
     }
 
-    public Task(String title, String description, LocalDate dueDate) {
+    public Task(Long id, String title, String description, LocalDate dueDate, boolean isCompleted, TaskPriority taskPriority) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
+        this.isCompleted = isCompleted;
+        this.taskPriority = taskPriority;
+    }
+
+    public Task(String title, String description, LocalDate dueDate, TaskPriority taskPriority) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.taskPriority = taskPriority;
     }
 
     public Task(String title, String description, LocalDate dueDate, boolean isCompleted) {

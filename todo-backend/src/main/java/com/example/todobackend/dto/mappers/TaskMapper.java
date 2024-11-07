@@ -15,7 +15,8 @@ public class TaskMapper {
                 task.getTitle(),
                 task.getDescription(),
                 task.getDueDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                task.isCompleted()
+                task.isCompleted(),
+                task.getTaskPriority()
         );
     }
 
@@ -23,16 +24,19 @@ public class TaskMapper {
         return new Task(
                 request.title(),
                 request.description(),
-                LocalDate.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                LocalDate.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                request.taskPriority()
         );
     }
 
-    public static Task toUpdateTask(UpdateTaskRequest request) {
+    public static Task toUpdatedTask(Task task, UpdateTaskRequest request) {
         return new Task(
+                task.getId(),
                 request.title(),
                 request.description(),
                 LocalDate.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                request.isCompleted()
+                request.isCompleted(),
+                request.taskPriority()
         );
     }
 }
