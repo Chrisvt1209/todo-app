@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,7 +23,7 @@ public class Task {
 
     private String description;
 
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
 
     private boolean isCompleted = false;
 
@@ -40,7 +40,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String title, String description, LocalDate dueDate, boolean isCompleted, TaskPriority taskPriority) {
+    public Task(Long id, String title, String description, LocalDateTime dueDate, boolean isCompleted, TaskPriority taskPriority) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -49,14 +49,14 @@ public class Task {
         this.taskPriority = taskPriority;
     }
 
-    public Task(String title, String description, LocalDate dueDate, TaskPriority taskPriority) {
+    public Task(String title, String description, LocalDateTime dueDate, TaskPriority taskPriority) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.taskPriority = taskPriority;
     }
 
-    public Task(String title, String description, LocalDate dueDate, boolean isCompleted) {
+    public Task(String title, String description, LocalDateTime dueDate, boolean isCompleted) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -71,7 +71,7 @@ public class Task {
         this.category = category;
     }
 
-    public Task(String title, String description, LocalDate dueDate, boolean isCompleted, TaskPriority taskPriority) {
+    public Task(String title, String description, LocalDateTime dueDate, boolean isCompleted, TaskPriority taskPriority) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
