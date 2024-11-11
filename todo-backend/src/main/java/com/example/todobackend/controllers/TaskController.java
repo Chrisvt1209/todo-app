@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -50,9 +51,17 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> updateTodo(@PathVariable long id, @RequestBody UpdateTaskRequest request) {
         Task task = taskService.getTaskById(id);
-        task = TaskMapper.toUpdatedTask(task, request);
+
+        task.setTitle(request.title() != null ? request.title() : task.getTitle());
+        task.setDescription(request.description() != null ? request.description() : task.getDescription());
+        task.setDueDate(request.dueDate() != null ? LocalDate.parse(request.dueDate()) : task.getDueDate());
+        task.setCompleted(request.isCompleted() || task.isCompleted());
+        task.setTaskPriority(request.taskPriority() != null ? request.taskPriority() : task.getTaskPriority());
+
         taskService.updateTask(id, task);
+
         TaskResponse response = TaskMapper.toResponse(task);
+
         return ResponseEntity.ok(response);
     }
 

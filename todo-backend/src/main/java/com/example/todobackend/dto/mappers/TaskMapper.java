@@ -5,7 +5,7 @@ import com.example.todobackend.dto.taskDto.TaskResponse;
 import com.example.todobackend.dto.taskDto.UpdateTaskRequest;
 import com.example.todobackend.models.Task;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class TaskMapper {
@@ -24,7 +24,7 @@ public class TaskMapper {
         return new Task(
                 request.title(),
                 request.description(),
-                LocalDateTime.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                LocalDate.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 request.taskPriority()
         );
     }
@@ -34,7 +34,7 @@ public class TaskMapper {
                 task.getId(),
                 request.title(),
                 request.description(),
-                LocalDateTime.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                LocalDate.parse(request.dueDate(), DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                 request.isCompleted(),
                 request.taskPriority()
         );
